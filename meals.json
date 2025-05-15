@@ -1,0 +1,9 @@
+[
+    {"id": 1, "name": "Grilled Vegetable Bowl", "calories": 320, "ecoFriendly": true},
+    {"id": 2, "name": "Quinoa Avocado Salad", "calories": 280, "ecoFriendly": true},
+    {"id": 3, "name": "Chicken Wrap", "calories": 400, "ecoFriendly": false},
+    {"id": 4, "name": "Paneer Tikka", "calories": 450, "ecoFriendly": false},
+    {"id": 5, "name": "Vegan Burrito", "calories": 350, "ecoFriendly": true},
+    {"id": 6, "name": "Fruit Smoothie Bowl", "calories": 250, "ecoFriendly": true}
+  ]
+  
