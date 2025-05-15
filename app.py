@@ -20,14 +20,20 @@ with open('meals.json') as f:
     meals = json.load(f)
 
 # Load users from a JSON file or create an empty list
-if os.path.exists('users.json'):
-    with open('users.json') as f:
-        try:
-            users = json.load(f)
-        except json.JSONDecodeError:
-            users = []
-else:
-    users = []
+if not os.path.exists("users.json"):
+    with open("users.json", "w") as f:
+        json.dump([], f)
+
+def load_users():
+    with open("users.json") as f:
+        return json.load(f)
+
+def save_users(users):
+    with open("users.json", "w") as f:
+        json.dump(users, f)
+@app.route("/")
+def home():
+    return jsonify({"message": "API is running!"})
 
 @app.route('/personalizeMeals', methods=['POST'])
 def personalize_meals():
@@ -97,27 +103,27 @@ def chatbot():
 def get_meals():
     recommended_meals = random.sample(meals, 5)  # randomly select 5 meals
     return jsonify(recommended_meals)
-
-@app.route('/signup', methods=['POST'])
+@app.route("/signup", methods=["POST"])
 def signup():
     data = request.json
-    new_user = {
-        "email": data['email'],
-        "password": data['password']
-    }
-    users.append(new_user)
-    with open('users.json', 'w') as f:
-        json.dump(users, f, indent=4)
-    return jsonify({"message": "Signup successful!"}), 200
+    email = data.get("email")
+    password = data.get("password")
 
+    users = load_users()
+    if any(u["email"] == email for u in users):
+        return jsonify({"message": "User already exists"}), 409
 
-@app.route('/login', methods=['POST'])
+    users.append({"email": email, "password": password})
+    save_users(users)
+    return jsonify({"message": "Signup successful"}), 201
+
+@app.route("/login", methods=["POST"])
 def login():
     data = request.json
-    for user in users:
-        if user['email'] == data['email'] and user['password'] == data['password']:
-            return jsonify({"message": "Login successful!"}), 200
-    return jsonify({"error": "Invalid credentials"}), 401
+    email = data.get("email")
+    password = data.get("password")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    users = load_users()
+    if any(u["email"] == email and u["password"] == password for u in users):
+        return jsonify({"message": "Login successful"}), 200
+    return jsonify({"message": "Invalid credentials"}), 401
