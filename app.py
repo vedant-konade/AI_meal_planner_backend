@@ -4,7 +4,13 @@ import random
 import json
 import os
 import spacy
-nlp = spacy.load("en_core_web_sm")
+from spacy.cli import download
+
+try:
+    nlp = spacy.load("en_core_web_sm")
+except:
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
 
 app = Flask(__name__)
 CORS(app)  # Allow requests from frontend
